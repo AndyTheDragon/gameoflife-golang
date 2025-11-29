@@ -2,60 +2,57 @@ package main
 
 import "math/rand"
 
-type Grid struct {
+type indexFunc func(x, y, rows, cols int) int
+
+type GenericGrid struct {
 	rows int
 	cols int
 	cells []uint8
+	indexFor indexFunc
 }
 
-func NewGrid( rows, cols int) *Grid {
-	return &Grid{
+func NewGenericGrid( rows, cols int, indexFor indexFunc) *GenericGrid {
+	return &GenericGrid{
 		rows: rows,
 		cols: cols,
 		cells: make([]uint8, rows*cols),
+		indexFor: indexFor,
 	}
 }
 
-func (g *Grid) Size() (int, int) {
+func (g *GenericGrid) Size() (int, int) {
 	return g.rows, g.cols
 }
 
-func (g *Grid) IndexFor(x, y int) int {
-	if (x < 0 || x > g.cols-1 || y < 0 || y > g.rows-1) {
-		return -1
-	}
-	return y*g.cols + x
-}
-
-func (g *Grid) Get(x, y int) uint8 {
-	index := g.IndexFor(x, y)
+func (g *GenericGrid) Get(x, y int) uint8 {
+	index := g.indexFor(x, y, g.rows, g.cols)
 	if (index == -1) {
 		return 0
 	}
 	return g.cells[index]
 }
 
-func (g *Grid) Set(x, y int, value uint8) {
-	index := g.IndexFor(x, y)
+func (g *GenericGrid) Set(x, y int, value uint8) {
+	index := g.indexFor(x, y, g.rows, g.cols)
 	if (index == -1) {
 		return
 	}
 	g.cells[index] = value
 }
 
-func (g *Grid) SumOfNeighbors(x, y int) uint8 {
+func (g *GenericGrid) SumOfNeighbors(x, y int) uint8 {
 	return g.Get(x-1, y-1) + g.Get(x, y-1) + g.Get(x+1, y-1) +
 		   g.Get(x-1, y  )                 + g.Get(x+1, y  ) +
 		   g.Get(x-1, y+1) + g.Get(x, y+1) + g.Get(x+1, y+1)
 }
 
-func (g *Grid) Clear() {
+func (g *GenericGrid) Clear() {
 	for i := range g.cells {
 		g.cells[i] = 0
 	}
 }
 
-func (g *Grid) Randomize(probability float32) {
+func (g *GenericGrid) Randomize(probability float32) {
 	for i := range g.cells {
 		if rand.Float32() < probability {
 			g.cells[i] = 1
@@ -64,3 +61,4 @@ func (g *Grid) Randomize(probability float32) {
 		}
 	}
 }
+
