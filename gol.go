@@ -61,19 +61,16 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
     for x := 0; x < width; x++ {
         for y := 0; y < height; y++ {
-            for i := 0; i < scale; i++ {
-                for j := 0; j < scale; j++ {
-                    if grid[x][y] == 1 {
-                        screen.Set(x*scale+i, y*scale+j, liveCellColor)
-                    }
-                }
-            }
-        }
+			if grid[x][y] == 1 {
+				screen.Set(x, y, liveCellColor)
+			}
+		}
     }
+
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
-    return width*scale, height*scale
+    return width, height
 }
 
 func main() {
