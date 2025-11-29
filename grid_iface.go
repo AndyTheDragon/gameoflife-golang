@@ -7,4 +7,7 @@ type GridIface interface {
     SumOfNeighbors(x, y int) uint8
     Clear()
     Randomize(probability float32)
+    CopyFrom(other GridIface)
+    CopyTo(indexFunc indexFunc) GridIface
+    CreateSpaceship(name string, x, y int)
 }

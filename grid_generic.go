@@ -62,3 +62,52 @@ func (g *GenericGrid) Randomize(probability float32) {
 	}
 }
 
+func (g *GenericGrid) CreateSpaceship(spaceshipType string, xOffset, yOffset int) {
+	if (xOffset == -1 || yOffset == -1) {
+		xOffset = rand.Int() % g.cols
+		yOffset = rand.Int() % g.rows
+	}
+	switch spaceshipType {
+	case "glider":
+		g.Set(xOffset+0, yOffset+1, 1)
+		g.Set(xOffset+1, yOffset+2, 1)
+		g.Set(xOffset+2, yOffset+0, 1)
+		g.Set(xOffset+2, yOffset+1, 1)
+		g.Set(xOffset+2, yOffset+2, 1)
+	case "lightweight_spaceship":
+		g.Set(xOffset+0, yOffset+1, 1)
+		g.Set(xOffset+0, yOffset+4, 1)
+		g.Set(xOffset+1, yOffset+0, 1)
+		g.Set(xOffset+2, yOffset+0, 1)
+		g.Set(xOffset+3, yOffset+0, 1)
+		g.Set(xOffset+3, yOffset+4, 1)
+		g.Set(xOffset+4, yOffset+0, 1)
+		g.Set(xOffset+4, yOffset+1, 1)
+		g.Set(xOffset+4, yOffset+2, 1)
+		g.Set(xOffset+4, yOffset+3, 1)
+	}
+}
+
+func (g *GenericGrid) CopyFrom(other GridIface) {
+	rows, cols := other.Size()
+	if g.rows != rows || g.cols != cols {
+		return
+	}
+	for x := 0; x < cols; x++ {
+		for y := 0; y < rows; y++ {
+			g.Set(x, y, other.Get(x, y))
+		}
+	}
+}
+
+func (g *GenericGrid) CopyTo(indexFor indexFunc) GridIface {
+	newGrid := NewGenericGrid(g.rows, g.cols, indexFor)
+	for x := 0; x < g.cols; x++ {
+		for y := 0; y < g.rows; y++ {
+			newGrid.Set(x, y, g.Get(x, y))
+		}
+	}
+	// copy(newGrid.cells, g.cells)
+	return newGrid
+}
+
