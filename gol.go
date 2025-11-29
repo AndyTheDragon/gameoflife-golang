@@ -7,15 +7,15 @@ import (
 	"math/rand"
 
 	"github.com/hajimehoshi/ebiten/v2"
-
+	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
-const scale = 2
-const width = 400
-const height = 300
+const scale = 8
+const width = 160
+const height = 120
 
-var blue color.Color = color.RGBA{69, 145, 196, 255}
-var yellow color.Color = color.RGBA{255, 230, 120, 255}
+var backgroundColor color.Color = color.RGBA{102, 102, 102, 1}
+var liveCellColor color.Color = color.RGBA{102, 187, 102, 1}
 var grid [width][height]uint8 = [width][height]uint8{}
 var buffer [width][height]uint8 = [width][height]uint8{}
 var count int = 0
@@ -57,14 +57,14 @@ func (g *Game) Update() error {
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
-    screen.Fill(blue)
+    screen.Fill(backgroundColor)
 
     for x := 0; x < width; x++ {
         for y := 0; y < height; y++ {
             for i := 0; i < scale; i++ {
                 for j := 0; j < scale; j++ {
                     if grid[x][y] == 1 {
-                        screen.Set(x*scale+i, y*scale+j, yellow)
+                        screen.Set(x*scale+i, y*scale+j, liveCellColor)
                     }
                 }
             }
@@ -73,7 +73,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
-    return width, height
+    return width*scale, height*scale
 }
 
 func main() {
