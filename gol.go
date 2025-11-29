@@ -27,10 +27,10 @@ func NewGame(scale uint8, width, height int, randomizeProbability float32) *Game
 		width: width,
 		height: height,
 		updateInterval: 20,
-		backgroundColor: color.RGBA{102, 102, 102, 1},
-		liveCellColor: color.RGBA{102, 187, 102, 1},
-		grid: NewGrid(height, width),
-		buffer: NewGrid(height, width),
+		backgroundColor: color.RGBA{102, 102, 102, 255},
+		liveCellColor: color.RGBA{102, 187, 102, 255},
+		grid: NewTorusGrid(height, width),
+		buffer: NewTorusGrid(height, width),
 	}
 	g.grid.Randomize(randomizeProbability)
 	return g
