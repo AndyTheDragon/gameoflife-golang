@@ -12,6 +12,7 @@ type Game struct{
 	scale uint8
 	width int
 	height int
+	updateInterval int
 	backgroundColor color.Color
 	liveCellColor color.Color
 	grid GridIface
@@ -20,20 +21,23 @@ type Game struct{
 	isPaused bool
 }
 
-func NewGame(scale uint8, width, height int) *Game {
-	return &Game{
+func NewGame(scale uint8, width, height int, randomizeProbability float32) *Game {
+	g := &Game{
 		scale: scale,
 		width: width,
 		height: height,
+		updateInterval: 20,
 		backgroundColor: color.RGBA{102, 102, 102, 1},
 		liveCellColor: color.RGBA{102, 187, 102, 1},
 		grid: NewGrid(height, width),
 		buffer: NewGrid(height, width),
 	}
+	g.grid.Randomize(randomizeProbability)
+	return g
 }
 
 func (g *Game) Update() error {
-	if (inpututil.IsKeyJustPressed(ebiten.KeySpace)) {
+	if inpututil.IsKeyJustPressed(ebiten.KeySpace) {
 		g.isPaused = !g.isPaused
 	}
 	
@@ -41,7 +45,7 @@ func (g *Game) Update() error {
 		return nil
 	}
     g.count++
-    if g.count == 20 {
+    if g.count == g.updateInterval {
         for x := 0; x < g.width; x++ {
             for y := 0; y < g.height; y++ {
                 g.buffer.Set(x,y, 0)
@@ -82,9 +86,8 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
 func main() {
 	log.Println("Starting Game of Life...")
 
-	game := NewGame(8, 160, 120)
-	// random initial state
-	game.grid.Randomize(0.5)
+	game := NewGame(8, 160, 120, 0.5)
+	
 
 	ebiten.SetWindowSize(game.width*int(game.scale), game.height*int(game.scale))
 	ebiten.SetWindowTitle("Game of Life")
