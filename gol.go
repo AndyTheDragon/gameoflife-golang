@@ -19,10 +19,18 @@ var yellow color.Color = color.RGBA{255, 230, 120, 255}
 var grid [width][height]uint8 = [width][height]uint8{}
 var buffer [width][height]uint8 = [width][height]uint8{}
 var count int = 0
+var isPaused = false
 
 type Game struct{}
 
 func (g *Game) Update() error {
+	if (inpututil.IsKeyJustPressed(ebiten.KeySpace)) {
+		isPaused = !isPaused
+	}
+	
+	if isPaused {
+		return nil
+	}
     count++
     if count == 20 {
         // same logic as your old update()
